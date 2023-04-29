@@ -1,7 +1,8 @@
-package com.example.w
+package com.example.w.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.w.R
 
 class DailyNewsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

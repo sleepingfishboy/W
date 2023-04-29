@@ -3,16 +3,15 @@ package com.example.w
 import android.app.Application
 import android.os.Looper
 import android.widget.Toast
-import java.util.logging.Handler
 
 /**
  *作者：sleepingfishboy
  *时间：2023/4/29
 
  */
-class App :Application(){
+class Appp :Application(){
     companion object{
-        lateinit var mContext:App
+        lateinit var mContext:Appp
             private set
     }
 

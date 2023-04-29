@@ -1,4 +1,4 @@
-package com.example.w
+package com.example.w.database
 
 data class Story(
     val ga_prefix: String,
