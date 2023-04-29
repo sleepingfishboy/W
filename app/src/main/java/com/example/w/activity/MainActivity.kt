@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                         val list = response.body()
                         if (list != null) {
                             for (data in list) {
-                                Log.d("ggg", "(:)-->> id is ${data.date}")
+                                Log.d("ggg", "(:)-->> id is ${data.top_stories}")
                             }
                         }
                     } else {
@@ -82,9 +82,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        data class Data(
-            val data: String
-        )
+
 
 
 
