@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="toolbar_image_size">32dp</dimen>
+    <dimen name="toolbar_image_margin">12dp</dimen>
+    <dimen name="default_radius">8dp</dimen>
+</resources>
