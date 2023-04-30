@@ -75,8 +75,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
         bar()
         network()
         photograph()
