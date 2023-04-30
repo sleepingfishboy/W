@@ -2,10 +2,12 @@ package com.example.w.activity
 
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,13 +15,17 @@ import android.telephony.TelephonyCallback.DataActivationStateListener
 import android.transition.Transition
 import android.util.Log
 import android.view.Gravity
+import android.view.WindowManager
 
 
 import android.widget.ImageView
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.example.w.AppService
@@ -37,6 +43,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 import java.util.*
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -64,17 +71,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
         handler.post(updateDateTimeRunnable)
 
-        // Set up circular image on the right side of Toolbar to launch SecondActivity
+
+
+
+
+        bar()
+        network()
+        photograph()
+    }
+
+    private fun bar() {
         val imageView = ImageView(this).apply {
             setImageResource(R.drawable.icon) // Replace with your image resource ID
             setOnClickListener {
                 val intent = Intent(this@MainActivity, SignInActivity::class.java)
-
                 startActivity(intent)
-
             }
         }
         val layoutParams = Toolbar.LayoutParams(
@@ -86,9 +99,6 @@ class MainActivity : AppCompatActivity() {
         layoutParams.marginEnd = resources.getDimensionPixelSize(R.dimen.toolbar_image_margin)
         imageView.layoutParams = layoutParams
         mBinding.toolbar.addView(imageView, layoutParams)
-
-        network()
-        photograph()
     }
 
     override fun onDestroy() {
@@ -106,8 +116,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    fun network() {
+    private fun network() {
 
 
         val retrofit = Retrofit.Builder()
@@ -116,44 +125,35 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val appService = retrofit.create(AppService::class.java)
-//        appService.getLatestNews()?.enqueue(object : Callback<Data?> {
-//            override fun onResponse(call: Call<Data?>, response: Response<Data?>) {
-//                val data = response.body()
-//                if (data!=null){
-//
-//                }
-//            }
-//        })
+
         appService.getLatestNews()?.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>, response: Response<Data>) {
                 if (response.isSuccessful) {
                     val data = response.body()
                     if (data != null) {
-                        Log.d("ggg", "(:)-->> ${data.top_stories}")
+                        Log.d("ggg", "(:)-->> ${data.top_stories[1]}")
+
                     }
                 }
 
             }
 
             override fun onFailure(call: Call<Data>, t: Throwable) {
-                // 网络请求失败的情况
             }
         })
 
     }
 
-
     private fun photograph() {
-
-
         val bannerList = mutableListOf(
             R.drawable.banner_1,
             R.drawable.banner_2,
-
             R.drawable.banner_3,
             R.drawable.banner_4,
             R.drawable.banner_5
         )
+
+
 
         // 实例化 ViewPager 和 Adapter
         mBinding.viewPagerBanner

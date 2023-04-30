@@ -13,18 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.W"
         tools:targetApi="31">
-        <activity
-            android:name=".activity.MainActivity2"
-            android:exported="false" />
+
         <activity
             android:name=".activity.SignInActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.DailyNewsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

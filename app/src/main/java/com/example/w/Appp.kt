@@ -3,6 +3,7 @@ package com.example.w
 import android.app.Application
 import android.os.Looper
 import android.widget.Toast
+import android.os.Handler
 
 /**
  *作者：sleepingfishboy
@@ -18,7 +19,7 @@ class Appp :Application(){
     override fun onCreate() {
         super.onCreate()
         mContext = this
-        android.os.Handler(Looper.myLooper()!!).post{
+        Handler(Looper.myLooper()!!).post{
             while (true){
                 try {
                     Looper.loop()
