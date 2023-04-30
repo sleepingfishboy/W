@@ -11,7 +11,8 @@ import java.util.*
 
  */
 interface AppService {
+
     @GET("news/latest")
-fun getData(): Call<List<Data>>
+    fun getLatestNews(): Call<Data>?
 
 }
