@@ -8,12 +8,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Gravity
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import com.example.w.AppService
 import com.example.w.R
 import com.example.w.adapter.BannerPagerAdapter
@@ -34,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var mTvMon: TextView? = null
     private var mTvGreet: TextView? = null
     private var mIvIcon: ImageView? = null
+    private lateinit var bannerAdapter: BannerPagerAdapter
     private val mBinding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val updateDateTimeRunnable = object : Runnable {
@@ -70,11 +68,11 @@ class MainActivity : AppCompatActivity() {
 
         bar()
         network()
-        photograph()
+
     }
 
     private fun bar() {
-Log.d("ggg","(:)-->> bar")
+        Log.d("ggg", "(:)-->> bar")
         mIvIcon = findViewById(R.id.custom_iv)
         mIvIcon?.setOnClickListener {
             val intent = Intent(this@MainActivity, SignInActivity::class.java)
@@ -90,7 +88,7 @@ Log.d("ggg","(:)-->> bar")
 
     private fun getGreetingMessage(hourOfDay: Int): String {
         return when (hourOfDay) {
-            in 0..5 -> "现在是凌晨!"
+            in 0..5 -> "早点休息~"
             in 6..10 -> "早上好!"
             in 11..13 -> "知乎日报"
             in 14..18 -> "下午好!"
@@ -113,7 +111,24 @@ Log.d("ggg","(:)-->> bar")
                 if (response.isSuccessful) {
                     val data = response.body()
                     if (data != null) {
-                        Log.d("ggg", "(:)-->> ${data.top_stories[1]}")
+
+                        val topStories = data.top_stories
+                        val bannerItems = mutableListOf<Data.TopStory>()
+                        for (topStory in topStories) {
+                            val bannerItem = Data.TopStory(
+                                image = topStory.image,
+                                title = topStory.title,
+                                hint = topStory.hint
+                            )
+                            bannerItems.add(bannerItem)
+                        }
+
+                        // 初始化 ViewPager2 组件
+
+
+                        // 设置适配器
+                        val bannerAdapter = BannerPagerAdapter(bannerItems)
+                        mBinding.viewPagerBanner.adapter = bannerAdapter
 
                     }
                 }
@@ -126,44 +141,7 @@ Log.d("ggg","(:)-->> bar")
 
     }
 
-    private fun photograph() {
-        val bannerList = mutableListOf(
-            R.drawable.banner_1,
-            R.drawable.banner_2,
-            R.drawable.banner_3,
-            R.drawable.banner_4,
-            R.drawable.banner_5
-        )
 
-
-        // 实例化 ViewPager 和 Adapter
-        mBinding.viewPagerBanner
-        val bannerAdapter = BannerPagerAdapter(bannerList)
-
-        // 绑定 Adapter
-        mBinding.viewPagerBanner.adapter = bannerAdapter
-
-        val mRecyclerView = mBinding.viewPagerBanner.getChildAt(0) as RecyclerView
-        mRecyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER // 关闭 over-scroll 效果
-        mBinding.viewPagerBanner.offscreenPageLimit = 1 // 设置预加载为1，这里需要根据实际情况来调整
-
-
-        // 循环滚动
-        CoroutineScope(Dispatchers.Main).launch {
-            while (true) {
-                delay(3000)
-                val currentPosition = mBinding.viewPagerBanner.currentItem
-                mBinding.viewPagerBanner.setCurrentItem(currentPosition + 1, true)
-
-                // 用于无限循环，如果到了最后一页就重新开始
-                if (currentPosition == bannerList.size - 1) {
-                    delay(500) // 等待页面切换完毕再跳转
-                    mBinding.viewPagerBanner.setCurrentItem(0, false)
-                }
-            }
-        }
-
-    }
 
 }
 

@@ -4,36 +4,52 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.w.R
+import com.example.w.database.Data
 
 /**
  *作者：sleepingfishboy
  *时间：2023/4/29
 
  */
-class BannerPagerAdapter(private val bannerList: List<Int>) :
-    RecyclerView.Adapter<BannerPagerAdapter.ViewHolder>() {
+class BannerPagerAdapter(private val bannerItems: List<Data.TopStory>) :
+    RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder>() {
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.iv_banner_item_image)
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_banner,
+            parent, false
+        )
+        return BannerViewHolder(view)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_banner, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(holder.itemView)
-            .load(bannerList[position])
-            .into(holder.imageView)
+    override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
+        holder.bind(bannerItems[position])
     }
 
     override fun getItemCount(): Int {
-        return bannerList.size
+        return bannerItems.size
     }
 
+    inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageView: ImageView = itemView.findViewById(R.id.iv_banner_item_image)
+        private val titleTextView: TextView = itemView.findViewById(R.id.tv_banner_item_title)
+        private val authorTextView: TextView = itemView.findViewById(R.id.tv_banner_item_hint)
+
+        fun bind(bannerItem: Data.TopStory) {
+
+            Glide.with(itemView)
+                .load(bannerItem.image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+            titleTextView.text = bannerItem.title
+            authorTextView.text = bannerItem.hint
+        }
+    }
 }

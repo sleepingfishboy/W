@@ -54,6 +54,7 @@
                         android:textSize="12sp" />
 
                 </LinearLayout>
+
                 <View
                     android:layout_width="15dp"
                     android:layout_height="48dp"
@@ -69,7 +70,7 @@
 
             <TextView
                 android:id="@+id/custom_tv_greet"
-                android:layout_width="111dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
