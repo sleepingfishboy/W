@@ -4,11 +4,12 @@ package com.example.w.activity
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +21,7 @@ import com.example.w.adapter.BannerPagerAdapter
 import com.example.w.adapter.StoryAdapter
 import com.example.w.database.Data
 import com.example.w.databinding.ActivityMainBinding
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
         setSupportActionBar(mBinding.toolbar)
@@ -71,7 +73,9 @@ class MainActivity : AppCompatActivity() {
         handler.post(updateDateTimeRunnable)
 
 
+
         icon()
+        immersive()
         network()
 
     }
@@ -99,6 +103,12 @@ class MainActivity : AppCompatActivity() {
             in 11..13 -> "知乎日报"
             in 14..18 -> "下午好!"
             else -> "晚上好!"
+        }
+    }
+    private fun immersive(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }
 
@@ -133,7 +143,8 @@ class MainActivity : AppCompatActivity() {
                         mBinding.viewPagerBanner.adapter = bannerAdapter
 
                         //val layoutManager = LinearLayoutManager(this@MainActivity)
-                        val layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+                        val layoutManager =
+                            LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
                         //layoutManager.orientation = LinearLayoutManager.VERTICAL
                         mBinding.recyclerView.layoutManager = layoutManager
 
