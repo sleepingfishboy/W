@@ -2,53 +2,38 @@ package com.example.w.activity
 
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.telephony.TelephonyCallback.DataActivationStateListener
-import android.transition.Transition
 import android.util.Log
 import android.view.Gravity
-import android.view.WindowManager
-
-
 import android.widget.ImageView
-import android.widget.Toast
+import android.widget.TextView
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
 import com.example.w.AppService
 import com.example.w.R
 import com.example.w.adapter.BannerPagerAdapter
 import com.example.w.database.Data
 import com.example.w.databinding.ActivityMainBinding
-import com.google.gson.internal.bind.DateTypeAdapter
-
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 import java.util.*
-
 
 
 class MainActivity : AppCompatActivity() {
 
-
+    private var mTvDate: TextView? = null
+    private var mTvMon: TextView? = null
+    private var mTvGreet: TextView? = null
+    private var mIvIcon: ImageView? = null
     private val mBinding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val updateDateTimeRunnable = object : Runnable {
@@ -57,7 +42,15 @@ class MainActivity : AppCompatActivity() {
             val monthStr = SimpleDateFormat("MMM", Locale.CHINA).format(calendar.time)
             val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
             val greeting = getGreetingMessage(calendar.get(Calendar.HOUR_OF_DAY))
-            mBinding.toolbar.subtitle = "$monthStr\n$dayOfMonth | $greeting"
+            mTvDate = findViewById(R.id.custom_tv_date)
+            mTvMon = findViewById(R.id.custom_tv_mon)
+            mTvGreet = findViewById(R.id.custom_tv_greet)
+            mTvMon?.text = monthStr   // 将月份显示在对应的 TextView 中
+
+            // 显示日期和问候消息
+            mTvDate?.text = dayOfMonth.toString()
+            mTvGreet?.text = greeting
+
             handler.postDelayed(this, 1000)
         }
     }
@@ -81,22 +74,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bar() {
-        val imageView = ImageView(this).apply {
-            setImageResource(R.drawable.icon) // Replace with your image resource ID
-            setOnClickListener {
-                val intent = Intent(this@MainActivity, SignInActivity::class.java)
-                startActivity(intent)
-            }
+Log.d("ggg","(:)-->> bar")
+        mIvIcon = findViewById(R.id.custom_iv)
+        mIvIcon?.setOnClickListener {
+            val intent = Intent(this@MainActivity, SignInActivity::class.java)
+            startActivity(intent)
         }
-        val layoutParams = Toolbar.LayoutParams(
-            resources.getDimensionPixelSize(R.dimen.toolbar_image_size),
-            resources.getDimensionPixelSize(R.dimen.toolbar_image_size)
-        )
-        layoutParams.gravity =
-            Gravity.END or Gravity.CENTER_VERTICAL // Move the image to the right side of Toolbar
-        layoutParams.marginEnd = resources.getDimensionPixelSize(R.dimen.toolbar_image_margin)
-        imageView.layoutParams = layoutParams
-        mBinding.toolbar.addView(imageView, layoutParams)
+
     }
 
     override fun onDestroy() {
@@ -150,7 +134,6 @@ class MainActivity : AppCompatActivity() {
             R.drawable.banner_4,
             R.drawable.banner_5
         )
-
 
 
         // 实例化 ViewPager 和 Adapter

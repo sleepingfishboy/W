@@ -8,13 +8,14 @@
 
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="406dp"
-        android:layout_height="288dp"
-        android:layout_marginTop="80dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/icon"
+        android:layout_width="409dp"
+        android:layout_height="274dp"
+        android:layout_marginTop="4dp"
 
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </androidx.constraintlayout.widget.ConstraintLayout>
