@@ -20,27 +20,27 @@
         android:id="@+id/tv_banner_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="20dp"
         android:padding="10dp"
         android:text="       "
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_banner_item_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.169"
+        app:layout_constraintHorizontal_bias="0.192"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_banner_item_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="12dp"
         android:text="         "
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_banner_item_image"
         app:layout_constraintEnd_toEndOf="@+id/iv_banner_item_image"
-        app:layout_constraintHorizontal_bias="0.892"
+        app:layout_constraintHorizontal_bias="0.881"
         app:layout_constraintStart_toStartOf="@+id/iv_banner_item_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

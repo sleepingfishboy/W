@@ -4,16 +4,25 @@
     android:layout_height="wrap_content">
 
     <ImageView
-    android:id="@+id/iv_image"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:layout_alignParentEnd="true"
-    android:scaleType="centerCrop"
-    android:padding="10dp"/>
+        android:id="@+id/iv_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="9dp"
+        android:padding="10dp"
+        android:scaleType="centerCrop" />
+
     <LinearLayout
         android:id="@+id/text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="94dp"
+        android:layout_marginRight="-6dp"
         android:layout_toLeftOf="@+id/iv_image"
         android:orientation="vertical"
         android:padding="12dp">
@@ -22,18 +31,18 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="3"
             android:textColor="#333333"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:maxLines="3"/>
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:textColor="#999999"
-            android:textSize="12sp"
-            android:layout_marginTop="6dp"/>
+            android:textSize="12sp" />
 
 
     </LinearLayout>

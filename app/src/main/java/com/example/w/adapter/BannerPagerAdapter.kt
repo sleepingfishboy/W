@@ -18,9 +18,6 @@ import com.example.w.database.Data
  */
 class BannerPagerAdapter(private val bannerItems: List<Data.TopStory>) :
     RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder>() {
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.item_banner,

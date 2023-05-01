@@ -8,12 +8,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.w.AppService
 import com.example.w.R
 import com.example.w.adapter.BannerPagerAdapter
+import com.example.w.adapter.StoryAdapter
 import com.example.w.database.Data
 import com.example.w.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
@@ -32,6 +36,8 @@ class MainActivity : AppCompatActivity() {
     private var mTvGreet: TextView? = null
     private var mIvIcon: ImageView? = null
     private lateinit var bannerAdapter: BannerPagerAdapter
+    private lateinit var adapter: StoryAdapter
+
     private val mBinding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val updateDateTimeRunnable = object : Runnable {
@@ -65,13 +71,13 @@ class MainActivity : AppCompatActivity() {
         handler.post(updateDateTimeRunnable)
 
 
-
-        bar()
+        icon()
         network()
 
     }
 
-    private fun bar() {
+
+    private fun icon() {
         Log.d("ggg", "(:)-->> bar")
         mIvIcon = findViewById(R.id.custom_iv)
         mIvIcon?.setOnClickListener {
@@ -92,17 +98,15 @@ class MainActivity : AppCompatActivity() {
             in 6..10 -> "早上好!"
             in 11..13 -> "知乎日报"
             in 14..18 -> "下午好!"
-            else -> "晚上好"
+            else -> "晚上好!"
         }
     }
 
     private fun network() {
 
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://news-at.zhihu.com/api/4/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit = Retrofit.Builder().baseUrl("https://news-at.zhihu.com/api/4/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
 
         val appService = retrofit.create(AppService::class.java)
 
@@ -118,17 +122,38 @@ class MainActivity : AppCompatActivity() {
                             val bannerItem = Data.TopStory(
                                 image = topStory.image,
                                 title = topStory.title,
-                                hint = topStory.hint
+                                hint = topStory.hint,
+                                url = topStory.url
                             )
                             bannerItems.add(bannerItem)
                         }
 
-                        // 初始化 ViewPager2 组件
-
-
                         // 设置适配器
-                        val bannerAdapter = BannerPagerAdapter(bannerItems)
+                        bannerAdapter = BannerPagerAdapter(bannerItems)
                         mBinding.viewPagerBanner.adapter = bannerAdapter
+
+                        //val layoutManager = LinearLayoutManager(this@MainActivity)
+                        val layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+                        //layoutManager.orientation = LinearLayoutManager.VERTICAL
+                        mBinding.recyclerView.layoutManager = layoutManager
+
+
+                        val stories = data.stories
+                        val listItems = mutableListOf<Data.Story>()
+                        for (story in stories) {
+                            val listItem = Data.Story(
+                                images = story.images,
+                                title = story.title,
+                                hint = story.hint,
+                                url = story.url
+                            )
+                            listItems.add(listItem)
+                        }
+
+
+                        adapter = StoryAdapter(listItems)
+                        mBinding.recyclerView.adapter = adapter
+
 
                     }
                 }
@@ -140,7 +165,6 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
-
 
 
 }

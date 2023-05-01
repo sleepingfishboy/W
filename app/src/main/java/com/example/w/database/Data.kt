@@ -6,19 +6,16 @@ data class Data(
     val top_stories: List<TopStory>
 ) {
     data class Story(
-        val ga_prefix: String,
-        val hint: String,
-        val id: Int,
-        val image_hue: String,
-        val images: List<String>,
+         val hint: String,
+         val images: List<String>,
         val title: String,
-        val type: Int,
-        val url: String
+         val url: String
     )
 
     data class TopStory(
-        val hint: String,
-        val image: String,
-        val title: String
+         val hint: String,
+         val image: String,
+         val title: String,
+         val url: String
     )
 }
