@@ -21,7 +21,8 @@ interface AppService {
     @GET("news/latest")
     fun getLatestNews(): Call<Data>?
 
-
+    @GET("story/{id}/long-comments")
+    fun getLongComment(@Path("id") id: String?): Call<Data>?
 
 
 }

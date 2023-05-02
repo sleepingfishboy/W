@@ -13,4 +13,8 @@
         android:id="@+id/menu_comments"
         android:title="评论"
         android:icon="@drawable/comments" />
+    <item
+        android:id="@+id/menu_share"
+        android:title="评论"
+        android:icon="@drawable/share" />
 </menu>
