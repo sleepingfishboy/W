@@ -10,9 +10,9 @@ import android.os.Handler
  *时间：2023/4/29
 
  */
-class Appp :Application(){
+class App :Application(){
     companion object{
-        lateinit var mContext:Appp
+        lateinit var mContext:App
             private set
     }
 

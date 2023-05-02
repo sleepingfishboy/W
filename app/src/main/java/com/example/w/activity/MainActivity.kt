@@ -4,19 +4,16 @@ package com.example.w.activity
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import retrofit2.Callback
 import com.example.w.AppService
 import com.example.w.R
 import com.example.w.adapter.BannerPagerAdapter
@@ -25,7 +22,6 @@ import com.example.w.database.Data
 import com.example.w.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -40,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     private var mIvIcon: ImageView? = null
     private lateinit var bannerAdapter: BannerPagerAdapter
     private lateinit var adapter: StoryAdapter
-
     private val mBinding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val updateDateTimeRunnable = object : Runnable {
@@ -49,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             val monthStr = SimpleDateFormat("MMM", Locale.CHINA).format(calendar.time)
             val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
             val greeting = getGreetingMessage(calendar.get(Calendar.HOUR_OF_DAY))
+
             mTvDate = findViewById(R.id.custom_tv_date)
             mTvMon = findViewById(R.id.custom_tv_mon)
             mTvGreet = findViewById(R.id.custom_tv_greet)
@@ -77,14 +73,31 @@ class MainActivity : AppCompatActivity() {
 
 
         icon()
+network()
 
-        network()
+    }
+
+
+
+
+    private fun pastData() {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+        val year = calendar.get(Calendar.YEAR).toString().takeLast(2) // 获取年份后两位
+        val month = (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0') // 获取月份并补足两位，需要加1
+        val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0') // 获取日期并补足两位
+
+        var formattedDate = "$year$month$day" // 拼接年份、月份和日期
+        val retrofit = Retrofit.Builder().baseUrl("https://news-at.zhihu.com/api/4/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
+
+        val appService = retrofit.create(AppService::class.java)
+
 
     }
 
 
     private fun icon() {
-        Log.d("ggg", "(:)-->> bar")
         mIvIcon = findViewById(R.id.custom_iv)
         mIvIcon?.setOnClickListener {
             val intent = Intent(this@MainActivity, SignInActivity::class.java)
@@ -129,7 +142,8 @@ class MainActivity : AppCompatActivity() {
                                 image = topStory.image,
                                 title = topStory.title,
                                 hint = topStory.hint,
-                                url = topStory.url
+                                url = topStory.url,
+                                id=topStory.id
                             )
                             bannerItems.add(bannerItem)
                         }
@@ -152,7 +166,8 @@ class MainActivity : AppCompatActivity() {
                                 images = story.images,
                                 title = story.title,
                                 hint = story.hint,
-                                url = story.url
+                                url = story.url,
+                                id = story.id
                             )
                             listItems.add(listItem)
                         }
@@ -163,8 +178,9 @@ class MainActivity : AppCompatActivity() {
                         val swipeRefreshLayout =
                             findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
+
                         // 添加下拉刷新监听器
-                        swipeRefreshLayout.setOnRefreshListener {
+                        mBinding.swipeRefreshLayout.setOnRefreshListener {
                             GlobalScope.launch(Dispatchers.IO) {
                                 network()
                                 withContext(Dispatchers.Main) {
@@ -176,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 
                                 // 关闭下拉刷新动画
                                 withContext(Dispatchers.Main) {
-                                    swipeRefreshLayout.isRefreshing = false
+                                    mBinding.swipeRefreshLayout.isRefreshing = false
                                 }
                             }
 
@@ -191,8 +207,63 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    }
 
+
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+        val year = calendar.get(Calendar.YEAR).toString().takeLast(2) // 获取年份后两位
+        val month = (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0') // 获取月份并补足两位，需要加1
+        val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0') // 获取日期并补足两位
+
+        var formattedDate = "$year$month$day" // 拼接年份、月份和日期
+
+
+//        appService.getPastNews(formattedDate)?.enqueue(object :Callback<PastData>{
+//            override fun onResponse(call: Call<PastData>, response: Response<PastData>) {
+//                if (response.isSuccessful) {
+//                    val data = response.body()
+//                    if (data != null) {
+//
+//                        val stories = data.stories
+//                        val listItems = mutableListOf<PastData.Story>()
+//                        for (story in stories) {
+//                            val listItem = PastData.Story(
+//                                images = story.images,
+//                                title = story.title,
+//                                hint = story.hint,
+//                                url = story.url
+//                            )
+//                            listItems.add(listItem)
+//                        }
+//                        val layoutManager =
+//                            LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+//
+//                        mBinding.recyclerView.layoutManager = layoutManager
+//
+//                        adapter = StoryAdapter(listItems)
+//                        mBinding.recyclerView.adapter = adapter
+//                        mBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                                super.onScrolled(recyclerView, dx, dy)
+//
+//                                val layoutManager = recyclerView.layoutManager as LinearLayoutManager // 确保布局管理器为 LinearLayoutManager 或其子类
+//                                val lastItemPosition = layoutManager.findLastVisibleItemPosition()
+//                                if (lastItemPosition == adapter.itemCount - 1) {
+//                                    // 已经滚动到了最后一个 item
+//                                    // 此处触发加载更多数据的方法
+//                                }
+//                            }
+//                        })
+//                    }
+//                }
+//
+//            }
+//
+//            override fun onFailure(call: Call<PastData>, t: Throwable) {
+//            }
+//        })
+
+    }
 
 }
 
