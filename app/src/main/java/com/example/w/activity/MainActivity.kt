@@ -13,15 +13,17 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.w.AppService
 import com.example.w.R
 import com.example.w.adapter.BannerPagerAdapter
 import com.example.w.adapter.StoryAdapter
 import com.example.w.database.Data
 import com.example.w.databinding.ActivityMainBinding
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
 
         icon()
-        immersive()
+
         network()
 
     }
@@ -103,12 +105,6 @@ class MainActivity : AppCompatActivity() {
             in 11..13 -> "知乎日报"
             in 14..18 -> "下午好!"
             else -> "晚上好!"
-        }
-    }
-    private fun immersive(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }
 
@@ -142,10 +138,10 @@ class MainActivity : AppCompatActivity() {
                         bannerAdapter = BannerPagerAdapter(bannerItems)
                         mBinding.viewPagerBanner.adapter = bannerAdapter
 
-                        //val layoutManager = LinearLayoutManager(this@MainActivity)
+
                         val layoutManager =
                             LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
-                        //layoutManager.orientation = LinearLayoutManager.VERTICAL
+
                         mBinding.recyclerView.layoutManager = layoutManager
 
 
@@ -164,7 +160,27 @@ class MainActivity : AppCompatActivity() {
 
                         adapter = StoryAdapter(listItems)
                         mBinding.recyclerView.adapter = adapter
+                        val swipeRefreshLayout =
+                            findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
+                        // 添加下拉刷新监听器
+                        swipeRefreshLayout.setOnRefreshListener {
+                            GlobalScope.launch(Dispatchers.IO) {
+                                network()
+                                withContext(Dispatchers.Main) {
+                                    adapter.notifyDataSetChanged()
+                                }
+
+                                // 强制等待一秒钟，以确保用户能够看到下拉刷新的动画效果
+                                delay(1000)
+
+                                // 关闭下拉刷新动画
+                                withContext(Dispatchers.Main) {
+                                    swipeRefreshLayout.isRefreshing = false
+                                }
+                            }
+
+                        }
 
                     }
                 }

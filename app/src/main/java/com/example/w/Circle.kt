@@ -1,4 +1,4 @@
-package com.example.w.activity
+package com.example.w
 
 /**
  *作者：sleepingfishboy
