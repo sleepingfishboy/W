@@ -85,13 +85,13 @@ class StoryActivity : AppCompatActivity() {
         // 设置分享行为
         intent.action = Intent.ACTION_SEND
         // 设置分享内容的类型
-        intent.type = "text"
+        intent.type = "text/plain"
         // 添加分享内容标题
         intent.putExtra(Intent.EXTRA_SUBJECT, "好好")
         // 添加分享内容
         intent.putExtra(Intent.EXTRA_TEXT, content)
         // 创建分享的 Dialog
-        val shareIntent = Intent.createChooser(intent, "分享到")
+        val shareIntent = Intent.createChooser(intent, "")
         context.startActivity(shareIntent)
     }
 }
