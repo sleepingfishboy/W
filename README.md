@@ -1,5 +1,3 @@
-知乎日报
-
 # 红岩网校五一考核
 
 ## APP的简要介绍
@@ -8,9 +6,15 @@
 
 ## APP功能的展示(GIF)
 
+![img](https://f1zvi5y30aw.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjUwZTkzYWExNjFlODIyYWMyOGRmZjMxMjJiNzk1ZDNfNzhERDdsZEZuWVVTSkxhVm9aQ252SVBwMWlNZGNpaXRfVG9rZW46S3Z3SmJraWgzb2hzYWV4dXZ6QWNKOVlZblFlXzE2ODMwODU0NzA6MTY4MzA4OTA3MF9WNA)
+
+![img](https://f1zvi5y30aw.feishu.cn/space/api/box/stream/download/asynccode/?code=YmZjOWFiZWRjMjc3MjIxYjRmZjUxZWIwNjNlMDc4OTNfVDQ5YUJHUkJyS0pDZGt2UkdCTzBPYVBtMTBzb2h0Q3ZfVG9rZW46V1VDU2IyRmZVb25PYjF4eGtIN2M3MnMwblNnXzE2ODMwODU0NzA6MTY4MzA4OTA3MF9WNA)
+
+![img](https://f1zvi5y30aw.feishu.cn/space/api/box/stream/download/asynccode/?code=YzIyYjY4YzM5ODgwZDY1ZDYxNzY3YjdlYzE1NGQyNWJfaFRocUhwdmoxR1FjUGtGTEExSGJwcVpYZUVBcFFDODhfVG9rZW46TjFlcmJHSzZFbzNsOU94TG9DR2NXZnYxbmFjXzE2ODMwODU0NzA6MTY4MzA4OTA3MF9WNA)
+
 ## 技术亮点或者说你认为写得不错的地方
 
-除了那个评论的界面，其他界面还是比较美观
+除了那个评论的界面，其他界面还是比较美观。使用recyclerview较多，学会了使用webview。用toolbar基本还原了知乎日报的标题栏部分，实现了不同时间显示不同的问候语，左边的日期和月份会随着时间的变化而变化。
 
 ## 心得体会
 
