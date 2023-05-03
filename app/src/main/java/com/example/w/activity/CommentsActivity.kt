@@ -2,8 +2,6 @@ package com.example.w.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.w.AppService
@@ -26,10 +24,10 @@ class CommentsActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerviewLC)
 
-        // 获取传递过来的链接
+        // 获取传递过来的新闻故事 ID
         val id = intent.getIntExtra("id", -1)
 
-
+        // 发送网络请求获取评论数据
         val retrofit = Retrofit.Builder().baseUrl("https://news-at.zhihu.com/api/4/")
             .addConverterFactory(GsonConverterFactory.create()).build()
 
@@ -60,7 +58,6 @@ class CommentsActivity : AppCompatActivity() {
                                 author = comments.author,
                                 content = comments.content,
                                 )
-                            Log.d("ggg","(:)-->> ${comments.content}");
                             listItems.add(listItem)
                         }
 
@@ -68,7 +65,7 @@ class CommentsActivity : AppCompatActivity() {
                         adapter = ShortCommentsAdapter(listItems)
                         recyclerView.adapter = adapter
 
-                    }else Log.d("ggg","(:)-->> 评论没有请求回来")
+                    }
                 }
             }
             override fun onFailure(call: Call<ShortCommentsData>, t: Throwable) {

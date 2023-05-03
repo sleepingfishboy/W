@@ -7,7 +7,6 @@ import android.icu.util.Calendar
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: StoryAdapter
     private val mBinding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
+
+    // 定义更新时间和日期的 Runnable 对象
     private val updateDateTimeRunnable = object : Runnable {
         override fun run() {
             val calendar = Calendar.getInstance()
@@ -79,23 +80,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun pastData() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, 1)
-        val year = calendar.get(Calendar.YEAR).toString().takeLast(2) // 获取年份后两位
-        val month = (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0') // 获取月份并补足两位，需要加1
-        val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0') // 获取日期并补足两位
-
-        var formattedDate = "$year$month$day" // 拼接年份、月份和日期
-        val retrofit = Retrofit.Builder().baseUrl("https://news-at.zhihu.com/api/4/")
-            .addConverterFactory(GsonConverterFactory.create()).build()
-
-        val appService = retrofit.create(AppService::class.java)
-
-
-    }
-
-
+    // 初始化头像 ImageView 并添加点击事件
     private fun icon() {
         mIvIcon = findViewById(R.id.custom_iv)
         mIvIcon?.setOnClickListener {
@@ -105,11 +90,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // 声明销毁 Activity 时移除消息队列中的更新时间、日期的操作，缩短程序的运行时间和节省系统资源
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
     }
 
+
+    // 根据当前时间获取相应的问候信息
     private fun getGreetingMessage(hourOfDay: Int): String {
         return when (hourOfDay) {
             in 0..5 -> "早点休息~"
@@ -131,9 +119,10 @@ class MainActivity : AppCompatActivity() {
         appService.getLatestNews()?.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>, response: Response<Data>) {
                 if (response.isSuccessful) {
+                    // 解析得到的数据
                     val data = response.body()
                     if (data != null) {
-
+                        // 设置轮播图的适配器
                         val topStories = data.top_stories
                         val bannerItems = mutableListOf<Data.TopStory>()
                         for (topStory in topStories) {
@@ -147,11 +136,11 @@ class MainActivity : AppCompatActivity() {
                             bannerItems.add(bannerItem)
                         }
 
-                        // 设置适配器
+
                         bannerAdapter = BannerPagerAdapter(bannerItems)
                         mBinding.viewPagerBanner.adapter = bannerAdapter
 
-
+                        // 设置新闻列表的适配器
                         val layoutManager =
                             LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
 
@@ -177,13 +166,15 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                        Log.d("ggg", "(:)-->> 到这啊");
+                        // 监听滑动事件，实现上拉加载
                         mBinding.recyclerView.addOnScrollListener(object :
                             RecyclerView.OnScrollListener() {
                             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                                 super.onScrolled(recyclerView, dx, dy)
 
-                                more()
+                                if (dy > 0) {
+                                    more()
+                                }
                             }
                         })
 
@@ -195,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                                     adapter.notifyDataSetChanged()
                                 }
 
-                                // 强制等待一秒钟，以确保用户能够看到下拉刷新的动画效果
+                                // 等待一秒钟，以确保用户能够看到下拉刷新的动画效果
                                 delay(1000)
 
                                 // 关闭下拉刷新动画
@@ -221,37 +212,26 @@ class MainActivity : AppCompatActivity() {
     fun more() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, -1)
-        val year = calendar.get(Calendar.YEAR).toString().takeLast(2) // 获取年份后两位
-        val month = (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0') // 获取月份并补足两位，需要加1
-        val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0') // 获取日期并补足两位
+        val year = calendar.get(Calendar.YEAR).toString().takeLast(2)
+        val month = (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0')
+        val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0')
 
-        val formattedDate = "$year$month$day" // 拼接年份、月份和日期
+        val formattedDate = "$year$month$day"
 
-        val retrofit = Retrofit.Builder().baseUrl("https://news-at.zhihu.com/api/4/")
-            .addConverterFactory(GsonConverterFactory.create()).build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://news-at.zhihu.com/api/4/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
         val appService = retrofit.create(AppService::class.java)
+
         appService.getPastNews(formattedDate)?.enqueue(object : Callback<PastData> {
             override fun onResponse(call: Call<PastData>, response: Response<PastData>) {
                 if (response.isSuccessful) {
                     val data = response.body()
 
                     if (data != null) {
-
-
-                        val stories = data.stories
-                        val listItems = mutableListOf<PastData.Story>()
-                        for (story in stories) {
-                            val listItem = PastData.Story(
-                                images = story.images,
-                                title = story.title,
-                                hint = story.hint,
-                                url = story.url,
-                                id = story.id
-                            )
-                            listItems.add(listItem)
-                        }
-
-
+                        adapter.addData(data.stories)
                     }
                 }
             }

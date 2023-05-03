@@ -1,7 +1,6 @@
 package com.example.w.adapter
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,19 @@ class StoryAdapter(private val stories: MutableList<Data.Story>) :
         holder.bind(stories[position])
 
     }
-
+    fun addData(newItems: List<PastData.Story>) {
+        val convertedItems = newItems.map { item ->
+            Data.Story(
+                id = item.id,
+                title = item.title,
+                hint = "",
+                url = "https://daily.zhihu.com/story/${item.id}",
+                images = item.images
+            )
+        }
+        stories.addAll(convertedItems)
+        notifyDataSetChanged()
+    }
     override fun getItemCount(): Int {
         return stories.size
     }
@@ -44,6 +55,8 @@ class StoryAdapter(private val stories: MutableList<Data.Story>) :
         private val title: TextView = view.findViewById(R.id.tv_title)
         private val hint: TextView = view.findViewById(R.id.tv_hint)
         private val image: ImageView = view.findViewById(R.id.iv_image)
+
+        //将Data.Story类型数据与ViewHolder中的View进行绑定
         fun bind(listItem: Data.Story) {
             Glide.with(itemView)
                 .load(listItem.images[0])
@@ -54,7 +67,6 @@ class StoryAdapter(private val stories: MutableList<Data.Story>) :
 
             // 为 ItemView 添加点击事件
             itemView.setOnClickListener {
-                // 跳转到 WebView 显示对应链接
                 val intent = Intent(itemView.context, StoryActivity::class.java).apply {
                     putExtra("url", listItem.url)
                     putExtra("id", listItem.id)
