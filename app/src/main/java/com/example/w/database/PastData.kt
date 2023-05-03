@@ -11,6 +11,7 @@ data class PastData(
 ) {
     data class Story(
         val hint: String,
+        val id: Int,
         val images: List<String>,
         val title: String,
         val url: String

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -21,7 +22,9 @@ class StoryActivity : AppCompatActivity() {
 
         // 获取传递过来的链接
         val url = intent.getStringExtra("url")
-        val id = intent.getStringExtra("id")
+        Log.d("ggg","(:)-->> $url");
+        val id = intent.getIntExtra("id", -1)
+        Log.d("ggg","(:)-->> $id");
         // 初始化 WebView
         val webView: WebView = findViewById(R.id.web_view)
         webView.webChromeClient = WebChromeClient()

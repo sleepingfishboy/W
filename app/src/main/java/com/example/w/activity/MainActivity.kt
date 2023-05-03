@@ -7,18 +7,19 @@ import android.icu.util.Calendar
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import retrofit2.Callback
 import com.example.w.AppService
 import com.example.w.R
 import com.example.w.adapter.BannerPagerAdapter
 import com.example.w.adapter.StoryAdapter
 import com.example.w.database.Data
+import com.example.w.database.PastData
 import com.example.w.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -73,11 +74,9 @@ class MainActivity : AppCompatActivity() {
 
 
         icon()
-network()
+        network()
 
     }
-
-
 
 
     private fun pastData() {
@@ -143,7 +142,7 @@ network()
                                 title = topStory.title,
                                 hint = topStory.hint,
                                 url = topStory.url,
-                                id=topStory.id
+                                id = topStory.id
                             )
                             bannerItems.add(bannerItem)
                         }
@@ -175,9 +174,18 @@ network()
 
                         adapter = StoryAdapter(listItems)
                         mBinding.recyclerView.adapter = adapter
-                        val swipeRefreshLayout =
-                            findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
+
+
+                        Log.d("ggg", "(:)-->> 到这啊");
+                        mBinding.recyclerView.addOnScrollListener(object :
+                            RecyclerView.OnScrollListener() {
+                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                                super.onScrolled(recyclerView, dx, dy)
+
+                                more()
+                            }
+                        })
 
                         // 添加下拉刷新监听器
                         mBinding.swipeRefreshLayout.setOnRefreshListener {
@@ -208,62 +216,48 @@ network()
         })
 
 
+    }
 
+    fun more() {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, 1)
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
         val year = calendar.get(Calendar.YEAR).toString().takeLast(2) // 获取年份后两位
         val month = (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0') // 获取月份并补足两位，需要加1
         val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0') // 获取日期并补足两位
 
-        var formattedDate = "$year$month$day" // 拼接年份、月份和日期
+        val formattedDate = "$year$month$day" // 拼接年份、月份和日期
+
+        val retrofit = Retrofit.Builder().baseUrl("https://news-at.zhihu.com/api/4/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
+        val appService = retrofit.create(AppService::class.java)
+        appService.getPastNews(formattedDate)?.enqueue(object : Callback<PastData> {
+            override fun onResponse(call: Call<PastData>, response: Response<PastData>) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+
+                    if (data != null) {
 
 
-//        appService.getPastNews(formattedDate)?.enqueue(object :Callback<PastData>{
-//            override fun onResponse(call: Call<PastData>, response: Response<PastData>) {
-//                if (response.isSuccessful) {
-//                    val data = response.body()
-//                    if (data != null) {
-//
-//                        val stories = data.stories
-//                        val listItems = mutableListOf<PastData.Story>()
-//                        for (story in stories) {
-//                            val listItem = PastData.Story(
-//                                images = story.images,
-//                                title = story.title,
-//                                hint = story.hint,
-//                                url = story.url
-//                            )
-//                            listItems.add(listItem)
-//                        }
-//                        val layoutManager =
-//                            LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
-//
-//                        mBinding.recyclerView.layoutManager = layoutManager
-//
-//                        adapter = StoryAdapter(listItems)
-//                        mBinding.recyclerView.adapter = adapter
-//                        mBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                                super.onScrolled(recyclerView, dx, dy)
-//
-//                                val layoutManager = recyclerView.layoutManager as LinearLayoutManager // 确保布局管理器为 LinearLayoutManager 或其子类
-//                                val lastItemPosition = layoutManager.findLastVisibleItemPosition()
-//                                if (lastItemPosition == adapter.itemCount - 1) {
-//                                    // 已经滚动到了最后一个 item
-//                                    // 此处触发加载更多数据的方法
-//                                }
-//                            }
-//                        })
-//                    }
-//                }
-//
-//            }
-//
-//            override fun onFailure(call: Call<PastData>, t: Throwable) {
-//            }
-//        })
+                        val stories = data.stories
+                        val listItems = mutableListOf<PastData.Story>()
+                        for (story in stories) {
+                            val listItem = PastData.Story(
+                                images = story.images,
+                                title = story.title,
+                                hint = story.hint,
+                                url = story.url,
+                                id = story.id
+                            )
+                            listItems.add(listItem)
+                        }
 
+
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<PastData>, t: Throwable) {}
+        })
     }
-
 }
 

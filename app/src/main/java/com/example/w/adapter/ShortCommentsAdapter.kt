@@ -1,6 +1,5 @@
 package com.example.w.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.w.R
-import com.example.w.activity.StoryActivity
-import com.example.w.database.LongCommentsData
+import com.example.w.database.ShortCommentsData
 
 /**
  *作者：sleepingfishboy
  *时间：2023/5/2
 
  */
-class LongCommentsAdapter(private val comments: MutableList<LongCommentsData.Comment>) :
-    RecyclerView.Adapter<LongCommentsAdapter.ViewHolder>(){
+class ShortCommentsAdapter(private val comments: MutableList<ShortCommentsData.Comment>) :
+    RecyclerView.Adapter<ShortCommentsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -41,9 +39,9 @@ class LongCommentsAdapter(private val comments: MutableList<LongCommentsData.Com
         private val content: TextView = view.findViewById(R.id.tv_comments_item_content)
         private val author: TextView = view.findViewById(R.id.tv_comments_item_author)
         private val image: ImageView = view.findViewById(R.id.iv_comments_item_image)
-        fun bind(listItem: LongCommentsData.Comment) {
+        fun bind(listItem: ShortCommentsData.Comment) {
             Glide.with(itemView)
-                .load(listItem.avatar[0])
+                .load(listItem.avatar)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(image)
             content.text = listItem.content
@@ -53,4 +51,5 @@ class LongCommentsAdapter(private val comments: MutableList<LongCommentsData.Com
         }
 
     }
+
 }

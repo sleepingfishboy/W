@@ -1,6 +1,7 @@
 package com.example.w.adapter
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.w.R
 import com.example.w.activity.StoryActivity
 import com.example.w.database.Data
+import com.example.w.database.PastData
 
 
 /**
@@ -53,10 +55,12 @@ class StoryAdapter(private val stories: MutableList<Data.Story>) :
             // 为 ItemView 添加点击事件
             itemView.setOnClickListener {
                 // 跳转到 WebView 显示对应链接
-                val intent = Intent(itemView.context, StoryActivity::class.java)
-                intent.putExtra("url", listItem.url)
-                intent.putExtra("id", listItem.id)
-                itemView.context. startActivity(intent)
+                val intent = Intent(itemView.context, StoryActivity::class.java).apply {
+                    putExtra("url", listItem.url)
+                    putExtra("id", listItem.id)
+                }
+
+                itemView.context.startActivity(intent)
             }
         }
 
