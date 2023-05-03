@@ -27,8 +27,14 @@ class ShortCommentsAdapter(private val comments: MutableList<ShortCommentsData.C
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(comments[position])
 
+        if (comments.isEmpty()) {
+            holder.showEmptyView()
+        } else {
+            holder.hideEmptyView()
+            holder.bind(comments[position])
+
+        }
     }
 
     override fun getItemCount(): Int {
@@ -48,6 +54,12 @@ class ShortCommentsAdapter(private val comments: MutableList<ShortCommentsData.C
             author.text = listItem.author
 
 
+        }
+        fun showEmptyView() {
+            itemView.findViewById<TextView>(R.id.empty_view)?.visibility = View.VISIBLE
+        }
+        fun hideEmptyView() {
+            itemView.findViewById<TextView>(R.id.empty_view)?.visibility = View.GONE
         }
 
     }
