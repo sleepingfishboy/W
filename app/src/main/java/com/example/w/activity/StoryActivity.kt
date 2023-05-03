@@ -37,7 +37,7 @@ class StoryActivity : AppCompatActivity() {
         }
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+        bottomNavigationView.setOnItemSelectedListener { item ->
             // 处理点击事件
             when (item.itemId) {
                 R.id.menu_web -> {
@@ -53,7 +53,6 @@ class StoryActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 R.id.menu_share -> {
-
                     allShare(this,"${url}")
                 }
             }
