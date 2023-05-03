@@ -4,7 +4,7 @@
 
 这是一个模仿知乎日报的APP，可以显示置顶故事，和当日的一些故事，点进去可以查看评论，分享。
 
-## APP功能的展示(GIF)
+## APP功能的展示
 
 ![img](https://f1zvi5y30aw.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjUwZTkzYWExNjFlODIyYWMyOGRmZjMxMjJiNzk1ZDNfNzhERDdsZEZuWVVTSkxhVm9aQ252SVBwMWlNZGNpaXRfVG9rZW46S3Z3SmJraWgzb2hzYWV4dXZ6QWNKOVlZblFlXzE2ODMwODU0NzA6MTY4MzA4OTA3MF9WNA)
 
